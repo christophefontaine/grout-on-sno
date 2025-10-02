@@ -1,0 +1,46 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grout-telemetry-service
+  namespace: grout-monitoring
+  labels:
+    app: grout-telemetry
+spec:
+  type: ExternalName
+  externalName: droplet05.foobar.space
+  ports:
+  - name: metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: grout-telemetry-service
+  namespace: grout-monitoring
+subsets:
+- addresses:
+  - ip: 192.168.1.96
+  ports:
+  - name: metrics
+    port: 9090
+    protocol: TCP
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: grout-telemetry-monitor
+  namespace: grout-monitoring
+  labels:
+    app: grout-telemetry
+spec:
+  selector:
+    matchLabels:
+      app: grout-telemetry
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+    scheme: http

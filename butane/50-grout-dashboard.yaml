@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grout-dashboard
+  namespace: grout-monitoring
+  labels:
+    console.openshift.io/dashboard: "true"
+data:
+  grout-metrics.json: |
+    {
+      "dashboard": {
+        "id": null,
+        "title": "GROUT DPDK Metrics",
+        "tags": ["grout", "dpdk"],
+        "style": "dark",
+        "timezone": "browser",
+        "panels": [
+          {
+            "id": 1,
+            "title": "DPDK Port Statistics",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "dpdk_port_stats",
+                "legendFormat": "{{stat}} - Port {{port}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+          },
+          {
+            "id": 2,
+            "title": "DPDK Memory Usage",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "dpdk_memory_stats",
+                "legendFormat": "{{stat}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+          }
+        ],
+        "time": {"from": "now-30m", "to": "now"},
+        "refresh": "30s"
+      }
+    }

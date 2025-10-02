@@ -1,0 +1,16 @@
+variant: openshift
+version: 4.19.0
+metadata:
+  name: 00-disk-wipe
+  labels:
+    machineconfiguration.openshift.io/role: master
+storage:
+  disks:
+    - device: /dev/sda
+      wipe_table: true
+    - device: /dev/sdb
+      wipe_table: true
+    - device: /dev/sdc
+      wipe_table: true
+    - device: /dev/sdd
+      wipe_table: true

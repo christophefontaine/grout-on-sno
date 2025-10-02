@@ -1,0 +1,94 @@
+variant: openshift
+version: 4.19.0
+metadata:
+  name: 29-frr-config
+  labels:
+    machineconfiguration.openshift.io/role: master
+storage:
+  files:
+        - path: /etc/frr/daemons
+          mode: 0644
+          overwrite: false
+          contents:
+            inline: |
+              bgpd=yes
+              ospfd=no
+              ospf6d=no
+              ripd=no
+              ripngd=no
+              isisd=yes
+              pimd=no
+              ldpd=no
+              nhrpd=no
+              eigrpd=no
+              babeld=no
+              sharpd=no
+              pbrd=no
+              bfdd=yes
+              fabricd=no
+              vrrpd=no
+              vtysh_enable=yes
+              zebra_options="  -A 127.0.0.1 -s 90000000 --log file:/var/log/frr/frr.log --log stdout -M dplane_grout"
+              bgpd_options="   -A 127.0.0.1"
+              ospfd_options="  -A 127.0.0.1"
+              ospf6d_options=" -A ::1"
+              ripd_options="   -A 127.0.0.1"
+              ripngd_options=" -A ::1"
+              isisd_options="  -A 127.0.0.1"
+              pimd_options="   -A 127.0.0.1"
+              ldpd_options="   -A 127.0.0.1"
+              nhrpd_options="  -A 127.0.0.1"
+              eigrpd_options=" -A 127.0.0.1"
+              babeld_options=" -A 127.0.0.1"
+              sharpd_options=" -A 127.0.0.1"
+              pbrd_options="   -A 127.0.0.1"
+              staticd_options="-A 127.0.0.1"
+              bfdd_options="   -A 127.0.0.1"
+              fabricd_options="-A 127.0.0.1"
+              vrrpd_options="  -A 127.0.0.1"
+        - path: /etc/frr/frr.conf
+          mode: 0644
+          overwrite: false
+          contents:
+            inline: |
+              !
+              ip route 192.168.101.55/32 192.168.101.55 ocp nexthop-vrf gr-loop1
+              ip route 0.0.0.0/0 192.168.210.1
+              !
+              vrf gr-loop1
+               ip route 0.0.0.0/0 gr-loop0 nexthop-vrf default
+              exit-vrf
+              !
+              interface ocp
+                ip address 192.168.101.1/24
+              exit
+              !
+              interface fabric
+                ip address 192.168.210.55/24
+              exit
+              !
+              router bgp 64513
+               neighbor 192.168.210.3 remote-as 64513
+               neighbor 192.168.210.3 interface gr-loop0
+               neighbor 192.168.210.3 update-source 192.168.210.55
+               neighbor 192.168.210.3 ip-transparent
+               address-family ipv4 unicast
+                network 192.168.101.55/32
+               exit-address-family
+              exit
+              !
+        - path: /etc/frr/vtysh.conf
+          mode: 0644
+          overwrite: false
+          contents:
+            inline: |
+              service integrated-vtysh-config
+        - path: /usr/local/bin/configure-frr-grout-ns.sh
+          mode: 0755
+          overwrite: false
+          contents:
+            inline: |
+              #!/bin/sh
+              nsenter -n -t $(pidof grout) ip addr add 192.168.210.55/32 dev gr-loop0
+              nsenter -n -t $(pidof grout) ip route del default
+              nsenter -n -t $(pidof grout) ip route add default dev gr-loop0

@@ -1,0 +1,39 @@
+variant: openshift
+version: 4.19.0
+metadata:
+  name: 30-frr-service
+  labels:
+    machineconfiguration.openshift.io/role: master
+systemd:
+  units:
+    - name: frr-container.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=FRR Container Service  
+        After=grout-container.service network-online.target grout-frr-pod-setup.service
+        Before=kubelet.service crio.service ovs-configuration.service
+        Requires=grout-container.service grout-frr-pod-setup.service
+
+        [Service]
+        Type=forking
+        User=root
+        ExecStartPre=/bin/mkdir -p /run/frr
+        ExecStart=/usr/bin/podman run --rm --name frr-boot \
+          --pod grout-frr-pod \
+          --cpuset-cpus 0,1,2 \
+          --privileged -d --replace \
+          -e ZEBRA_DEBUG_DPLANE_GROUT=1 \
+          -v /run:/run \
+          -v /etc/frr:/etc/frr \
+          quay.io/grout/frr:edge \
+          /bin/sh -c 'chown frr /var/run/frr/ && source /usr/lib/frr/frrcommon.sh && /usr/lib/frr/watchfrr $(daemon_list)'
+        ExecStartPost=ip link set eno49 vf 0 vlan 3967
+        ExecStartPost=sleep 5
+        ExecStartPost=-/usr/local/bin/configure-frr-grout-ns.sh
+        ExecStop=/usr/bin/podman stop frr-boot
+        Restart=always
+        RestartSec=10
+
+        [Install]
+        WantedBy=multi-user.target

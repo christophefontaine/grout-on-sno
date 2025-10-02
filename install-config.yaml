@@ -1,0 +1,23 @@
+apiVersion: v1
+baseDomain: foobar.space
+metadata:
+  name: droplet05
+compute:
+- name: worker
+  replicas: 0
+controlPlane:
+  name: master
+  replicas: 1
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  machineNetwork:
+  - cidr: 192.168.101.0/24
+  networkType: OVNKubernetes
+  serviceNetwork:
+  - 172.32.0.0/16
+platform:
+  none: {}
+pullSecret: '{}'
+sshKey: ''

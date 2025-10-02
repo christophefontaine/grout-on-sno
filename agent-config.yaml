@@ -1,0 +1,93 @@
+apiVersion: v1alpha1
+kind: AgentConfig
+metadata:
+  name: droplet05
+rendezvousIP: 192.168.101.55
+hosts:
+- hostname: droplet05.foobar.space
+  role: master
+  rootDeviceHints:
+    deviceName: /dev/nvme0n1
+  interfaces:
+  - name: eno49
+    macAddress: 48:df:37:68:d7:10
+  networkConfig:
+    interfaces:
+    - name: eno1
+      type: ethernet
+      state: up
+      ipv4:
+        enabled: true
+        address:
+        - ip: 192.168.2.107
+          prefix-length: 24
+        dhcp: false
+    - name: eno2
+      type: ethernet
+      state: down
+    - name: eno3
+      type: ethernet
+      state: down
+    - name: eno4
+      type: ethernet
+      state: down
+    - name: eno49
+      type: ethernet
+      state: up
+      ethernet:
+        sr-iov:
+          total-vfs: 4
+          vfs:
+          - id: 0
+            mac-address: "02:00:00:00:05:00"
+            spoof-check: false
+            trust: true
+          - id: 1
+            mac-address: "02:00:00:00:05:01"
+            spoof-check: false
+            trust: true
+          - id: 2
+            mac-address: "02:00:00:00:05:02"
+          - id: 3
+            mac-address: "02:00:00:00:05:03"
+    - name: eno49v0 # VF 0 interface
+      type: ethernet
+      state: up
+      ipv4:
+        enabled: true
+        address:
+        - ip: 192.168.101.55
+          prefix-length: 32
+        dhcp: false
+      ipv6:
+        enabled: true
+        autoconf: true
+        dhcp: true
+    - name: eno49v1 # VF 1 interface, which shouldn't be present
+      type: ethernet
+      state: down
+    - name: eno49v2 # VF 2 interface, for workload
+      type: ethernet
+      state: down
+    - name: eno49v3 # VF 3 interface, for workload
+      type: ethernet
+      state: down
+    - name: eno50
+      type: ethernet
+      state: down
+    - name: ens2f0
+      type: ethernet
+      state: down
+    - name: ens2f1
+      type: ethernet
+      state: down
+    routes:
+      config:
+      - destination: 0.0.0.0/0
+        next-hop-address: 192.168.101.1
+        next-hop-interface: eno49v0
+    dns-resolver:
+      config:
+        server:
+        - 192.168.1.10
+        - 192.168.1.20

@@ -1,0 +1,74 @@
+variant: openshift
+version: 4.19.0
+metadata:
+  name: 20-grout-services
+  labels:
+    machineconfiguration.openshift.io/role: master
+systemd:
+  units:
+    - name: grout-container.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=GROUT Container Service
+        After=network-online.target dev-hugepages.mount grout-frr-pod-setup.service
+        Before=kubelet.service crio.service ovs-configuration.service
+        Wants=network-online.target dev-hugepages.mount
+        Requires=dev-hugepages.mount grout-frr-pod-setup.service
+        ConditionPathExists=/dev/hugepages
+
+        [Service]
+        Type=notify
+        User=root
+        NotifyAccess=all
+        ExecStartPre=/usr/bin/udevadm settle
+        ExecStartPre=-/usr/bin/podman rm grout-boot --ignore
+        ExecStart=/usr/bin/podman run --name grout-boot \
+          --pod grout-frr-pod \
+          --privileged \
+          --cap-add=SYS_ADMIN \
+          --cap-add=NET_ADMIN \
+          --cap-add=IPC_LOCK \
+          --cpuset-cpus 2,3,4 \
+          -e NOTIFY_SOCKET \
+          -v /dev/hugepages:/dev/hugepages \
+          -v /dev/vfio:/dev/vfio \
+          -v /sys/bus/pci:/sys/bus/pci \
+          -v /run:/run \
+          -v /etc/grout:/etc/grout:ro \
+          quay.io/grout/grout:edge /usr/bin/grout -vv -m 0666
+        ExecStartPost=/usr/bin/podman exec grout-boot /usr/bin/grcli -xef /etc/grout/interfaces
+        ExecStop=/usr/bin/podman stop grout-boot
+        Restart=always
+        RestartSec=10
+
+        [Install]
+        WantedBy=multi-user.target
+        
+    - name: grout-telemetry.service
+      enabled: false
+      contents: |
+        [Unit]
+        Description=GROUT DPDK Telemetry Exporter
+        After=grout-container.service network-online.target grout-network-setup.service
+        Requires=grout-container.service
+        Wants=network-online.target
+
+        [Service]
+        Type=simple
+        User=root
+        ExecStartPre=/usr/bin/podman rm -f grout-telemetry
+        ExecStart=/usr/bin/podman run --rm --name grout-telemetry \
+          --pod grout-frr-pod \
+          --cpuset-cpus 0,1,2 \
+          -p 9876:9876 \
+          -v /run:/run \
+          quay.io/grout/grout:edge \
+          /usr/bin/grout-telemetry-exporter
+        ExecStop=/usr/bin/podman stop grout-telemetry
+        ExecStopPost=/usr/bin/podman rm -f grout-telemetry
+        Restart=always
+        RestartSec=10
+
+        [Install]
+        WantedBy=multi-user.target
