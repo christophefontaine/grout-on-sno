@@ -16,22 +16,3 @@ storage:
               add interface vlan fabric parent eno49v1 vlan_id 210
               set interface port eno49v1 down
               set interface port eno49v1 up
-
-        - path: /etc/udev/rules.d/99-grout-routing.rules
-          mode: 0644
-          overwrite: true
-          contents:
-            inline: |
-              # Set default route via gr-loop0 when interface is added
-              ACTION=="add", KERNEL=="gr-loop0", RUN+="/usr/sbin/iptables -t mangle -A PREROUTING -i gr-loop0 -j MARK --set-mark 0x1"
-              ACTION=="add", KERNEL=="gr-loop0", RUN+="/usr/sbin/ip route replace local default dev gr-loop0 table 42"
-              ACTION=="add", KERNEL=="gr-loop0", RUN+="/usr/sbin/ip rule add fwmark 0x1 lookup 42 priority 42"
-              
-              ACTION=="remove", KERNEL=="gr-loop0", RUN+="/usr/sbin/ip route del table 42 local default dev gr-loop0"
-              ACTION=="remove", KERNEL=="gr-loop0", RUN+="/usr/sbin/ip rule del fwmark 0x1 lookup 42 priority 42"
-              ACTION=="remove", KERNEL=="gr-loop0", RUN+="/usr/sbin/iptables -t mangle -D PREROUTING -i gr-loop0 -j MARK --set-mark 0x1"
-              
-              # Set reverse path filter for gr-loop0 interface (IPv4 and IPv6)
-              ACTION=="add", KERNEL=="gr-loop0", RUN+="/usr/sbin/sysctl -w net.ipv4.conf.gr-loop0.rp_filter=0"
-              ACTION=="add", KERNEL=="gr-loop0", RUN+="/usr/sbin/sysctl -w net.ipv6.conf.gr-loop0.accept_ra=0"
-              ACTION=="add", KERNEL=="gr-loop0", RUN+="/usr/sbin/sysctl -w net.ipv6.conf.gr-loop0.autoconf=0"
