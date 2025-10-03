@@ -39,7 +39,7 @@ systemd:
         ExecStartPre=-/usr/bin/podman pull quay.io/grout/grout:edge
         ExecStartPre=-/usr/bin/podman pod stop grout-frr-pod
         ExecStartPre=-/usr/bin/podman pod rm grout-frr-pod --ignore
-        ExecStart=/usr/bin/podman pod create --name grout-frr-pod --network=grout-net --volume=/etc/udev/rules.d/99-grout-routing.rules:/etc/udev/rules.d/99-grout-routing.rules:ro --volume=/run/udev:/run/udev:rw
+        ExecStart=/usr/bin/podman pod create --name grout-frr-pod --network=grout-net -p 9876:9876
         ExecStop=/usr/bin/podman pod stop grout-frr-pod
         ExecStopPost=/usr/bin/podman pod rm grout-frr-pod --ignore
 

@@ -46,7 +46,7 @@ systemd:
         WantedBy=multi-user.target
         
     - name: grout-telemetry.service
-      enabled: false
+      enabled: true
       contents: |
         [Unit]
         Description=GROUT DPDK Telemetry Exporter
@@ -61,7 +61,7 @@ systemd:
         ExecStart=/usr/bin/podman run --rm --name grout-telemetry \
           --pod grout-frr-pod \
           --cpuset-cpus 0,1,2 \
-          -p 9876:9876 \
+          --privileged --replace \
           -v /run:/run \
           quay.io/grout/grout:edge \
           /usr/bin/grout-telemetry-exporter
