@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sriov-test-pod
+  namespace: default
+  annotations:
+    k8s.v1.cni.cncf.io/networks: eno49-network
+spec:
+  containers:
+  - name: sriov-test
+    image: registry.access.redhat.com/ubi9/ubi:latest
+    command:
+    - /bin/bash
+    - -c
+    - |
+      echo "SR-IOV VF Test Pod"
+      echo "Available network interfaces:"
+      ip link show
+      echo ""
+      echo "Network interface details:"
+      ip addr show
+      echo ""
+      ip addr add 192.168.42.55/24 dev net1
+      ip route add 192.168.0.0/16 via 192.168.42.1
+      echo ""
+      ip addr show
+      echo "Sleeping indefinitely..."
+      sleep infinity
+    resources:
+      requests:
+        openshift.io/eno49netdevice: "1"
+      limits:
+        openshift.io/eno49netdevice: "1"
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_RAW
+  restartPolicy: Never

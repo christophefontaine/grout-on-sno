@@ -53,9 +53,14 @@ storage:
             inline: |
               !
               ip route 192.168.101.55/32 192.168.101.55 ocp nexthop-vrf gr-loop1
+              ip route 192.168.42.0/24 gr-loop2 nexthop-vrf gr-loop2
               ip route 0.0.0.0/0 192.168.210.1
               !
               vrf gr-loop1
+               ip route 0.0.0.0/0 gr-loop0 nexthop-vrf default
+              exit-vrf
+              !
+              vrf gr-loop2
                ip route 0.0.0.0/0 gr-loop0 nexthop-vrf default
               exit-vrf
               !
@@ -67,6 +72,10 @@ storage:
                 ip address 192.168.210.55/24
               exit
               !
+              interface sriov42
+               ip address 192.168.42.1/24
+              exit
+              !
               router bgp 64513
                neighbor 192.168.210.3 remote-as 64513
                neighbor 192.168.210.3 interface gr-loop0
@@ -74,6 +83,7 @@ storage:
                neighbor 192.168.210.3 ip-transparent
                address-family ipv4 unicast
                 network 192.168.101.55/32
+                network 192.168.42.0/24
                exit-address-family
               exit
               !
