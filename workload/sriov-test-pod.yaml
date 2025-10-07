@@ -14,17 +14,16 @@ spec:
     - /bin/bash
     - -c
     - |
-      echo "SR-IOV VF Test Pod"
+      echo "SR-IOV VF Test Pod with IPAM"
       echo "Available network interfaces:"
       ip link show
       echo ""
-      echo "Network interface details:"
+      echo "Network interface details (with auto-assigned IP):"
       ip addr show
       echo ""
-      ip addr add 192.168.42.55/24 dev net1
-      ip route add 192.168.0.0/16 via 192.168.42.1
+      echo "Routing table:"
+      ip route show
       echo ""
-      ip addr show
       echo "Sleeping indefinitely..."
       sleep infinity
     resources:
