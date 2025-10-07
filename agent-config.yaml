@@ -36,7 +36,7 @@ hosts:
       state: up
       ethernet:
         sr-iov:
-          total-vfs: 4
+          total-vfs: 8
           vfs:
           - id: 0
             mac-address: "02:00:00:00:05:00"
@@ -74,7 +74,10 @@ hosts:
       state: down
     - name: eno50
       type: ethernet
-      state: down
+      state: up
+      ethernet:
+        sr-iov:
+          total-vfs: 8
     - name: ens2f0
       type: ethernet
       state: down

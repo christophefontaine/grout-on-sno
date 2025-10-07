@@ -9,3 +9,14 @@ spec:
   networkNamespace: default
   ipam: '{}'
   vlan: 42
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetwork
+metadata:
+  name: eno50-network
+  namespace: openshift-sriov-network-operator
+spec:
+  resourceName: eno50netdevice
+  networkNamespace: default
+  ipam: '{}'
+  vlan: 211

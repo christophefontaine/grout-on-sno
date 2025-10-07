@@ -10,10 +10,29 @@ spec:
   resourceName: eno49netdevice
   priority: 99
   externallyManaged: true
-  numVfs: 4
+  numVfs: 8
   nicSelector:
     pfNames:
-    - eno49#2-3
+    - eno49#2-7
+  deviceType: netdevice
+  isRdma: false
+  excludeTopology: true
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: eno50-netdevice-policy
+  namespace: openshift-sriov-network-operator
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: droplet05.foobar.space
+  resourceName: eno50netdevice
+  priority: 99
+  externallyManaged: true
+  numVfs: 8
+  nicSelector:
+    pfNames:
+    - eno50#1-7
   deviceType: netdevice
   isRdma: false
   excludeTopology: true
