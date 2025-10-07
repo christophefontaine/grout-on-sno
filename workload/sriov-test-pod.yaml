@@ -26,11 +26,6 @@ spec:
       echo ""
       echo "Sleeping indefinitely..."
       sleep infinity
-    resources:
-      requests:
-        openshift.io/eno49netdevice: "1"
-      limits:
-        openshift.io/eno49netdevice: "1"
     securityContext:
       capabilities:
         add:
