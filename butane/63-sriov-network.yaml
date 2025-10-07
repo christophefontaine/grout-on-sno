@@ -7,19 +7,19 @@ metadata:
 spec:
   resourceName: eno49netdevice
   networkNamespace: default
+  vlan: 42
   ipam: |
     {
       "type": "whereabouts",
       "range": "192.168.42.0/24",
       "range_start": "192.168.42.10",
-      "range_end": "192.168.42.254",
+      "range_end": "192.168.42.100",
       "gateway": "192.168.42.1",
       "routes": [{
         "dst": "0.0.0.0/0",
         "gw": "192.168.42.1"
       }]
     }
-  vlan: 42
 ---
 apiVersion: sriovnetwork.openshift.io/v1
 kind: SriovNetwork
@@ -29,5 +29,38 @@ metadata:
 spec:
   resourceName: eno50netdevice
   networkNamespace: default
-  ipam: '{}'
+  vlan: 42
+  ipam: |
+    {
+      "type": "whereabouts",
+      "range": "192.168.42.0/24",
+      "range_start": "192.168.42.101",
+      "range_end": "192.168.42.200",
+      "gateway": "192.168.42.1",
+      "routes": [{
+        "dst": "0.0.0.0/0",
+        "gw": "192.168.42.1"
+      }]
+    }
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetwork
+metadata:
+  name: public-vlan211
+  namespace: openshift-sriov-network-operator
+spec:
+  resourceName: eno50netdevice
+  networkNamespace: default
   vlan: 211
+  ipam: |
+    {
+      "type": "whereabouts",
+      "range": "192.168.211.0/24",
+      "range_start": "192.168.211.10",
+      "range_end": "192.168.211.100",
+      "gateway": "192.168.211.1",
+      "routes": [{
+        "dst": "0.0.0.0/0",
+        "gw": "192.168.211.3"
+      }]
+    }
