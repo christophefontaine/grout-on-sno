@@ -2,10 +2,79 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: sriov-test-pod
+  name: sriov-routed-eno49
   namespace: default
   annotations:
     k8s.v1.cni.cncf.io/networks: eno49-network
+spec:
+  containers:
+  - name: sriov-test
+    image: registry.access.redhat.com/ubi9/ubi:latest
+    command:
+    - /bin/bash
+    - -c
+    - |
+      echo "SR-IOV VF Test Pod with IPAM"
+      echo "Available network interfaces:"
+      ip link show
+      echo ""
+      echo "Network interface details (with auto-assigned IP):"
+      ip addr show
+      echo ""
+      echo "Routing table:"
+      ip route show
+      echo ""
+      echo "Sleeping indefinitely..."
+      sleep infinity
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_RAW
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sriov-routed-eno50
+  namespace: default
+  annotations:
+    k8s.v1.cni.cncf.io/networks: eno50-network
+spec:
+  containers:
+  - name: sriov-test
+    image: registry.access.redhat.com/ubi9/ubi:latest
+    command:
+    - /bin/bash
+    - -c
+    - |
+      echo "SR-IOV VF Test Pod with IPAM"
+      echo "Available network interfaces:"
+      ip link show
+      echo ""
+      echo "Network interface details (with auto-assigned IP):"
+      ip addr show
+      echo ""
+      echo "Routing table:"
+      ip route show
+      echo ""
+      echo "Sleeping indefinitely..."
+      sleep infinity
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_RAW
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sriov-direct
+  namespace: default
+  annotations:
+    k8s.v1.cni.cncf.io/networks: eno49-network
+    k8s.v1.cni.cncf.io/networks: public-vlan211
 spec:
   containers:
   - name: sriov-test
