@@ -39,17 +39,11 @@ hosts:
           total-vfs: 8
           vfs:
           - id: 0
-            mac-address: "02:00:00:00:05:00"
             spoof-check: false
             trust: true
           - id: 1
-            mac-address: "02:00:00:00:05:01"
             spoof-check: false
             trust: true
-          - id: 2
-            mac-address: "02:00:00:00:05:02"
-          - id: 3
-            mac-address: "02:00:00:00:05:03"
     - name: eno49v0 # VF 0 interface
       type: ethernet
       state: up
@@ -63,13 +57,25 @@ hosts:
         enabled: true
         autoconf: true
         dhcp: true
-    - name: eno49v1 # VF 1 interface, which shouldn't be present
+    - name: eno49v1
       type: ethernet
       state: down
-    - name: eno49v2 # VF 2 interface, for workload
+    - name: eno49v2
       type: ethernet
       state: down
-    - name: eno49v3 # VF 3 interface, for workload
+    - name: eno49v3
+      type: ethernet
+      state: down
+    - name: eno49v4
+      type: ethernet
+      state: down
+    - name: eno49v5
+      type: ethernet
+      state: down
+    - name: eno49v6
+      type: ethernet
+      state: down
+    - name: eno49v7
       type: ethernet
       state: down
     - name: eno50
@@ -78,6 +84,34 @@ hosts:
       ethernet:
         sr-iov:
           total-vfs: 8
+          vfs:
+          - id: 0
+            spoof-check: false
+            trust: true
+    - name: eno50v0
+      type: ethernet
+      state: down
+    - name: eno50v1
+      type: ethernet
+      state: down
+    - name: eno50v2
+      type: ethernet
+      state: down
+    - name: eno50v3
+      type: ethernet
+      state: down
+    - name: eno50v4
+      type: ethernet
+      state: down
+    - name: eno50v5
+      type: ethernet
+      state: down
+    - name: eno50v6
+      type: ethernet
+      state: down
+    - name: eno50v7
+      type: ethernet
+      state: down
     - name: ens2f0
       type: ethernet
       state: down
