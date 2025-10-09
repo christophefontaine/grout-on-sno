@@ -12,8 +12,8 @@ storage:
           contents:
             inline: |
               interface add port eno49v1 devargs 0000:04:02.1 rxqs 2
-              interface add port eno50v0 devargs 0000:04:10.0 rxqs 2
+              interface add port eno50v0 devargs 0000:04:0a.0 rxqs 2
               interface add vlan fabric parent eno49v1 vlan_id 210
               interface add vlan ocp parent eno49v1 vlan_id 3967 vrf 1
-              interface add vlan sriov42 parent eno49v1 vlan_id 42 vrf 2
-              interface add vlan sriov42 parent eno50v0 vlan_id 42 vrf 2
+              interface add vlan eno49.42 parent eno49v1 vlan_id 42 vrf 2
+              interface add vlan eno50.42 parent eno50v0 vlan_id 42 vrf 2

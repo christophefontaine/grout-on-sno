@@ -61,6 +61,7 @@ storage:
               exit-vrf
               !
               vrf gr-loop2
+               ip address 192.168.42.1/24
                ip route 0.0.0.0/0 gr-loop0 nexthop-vrf default
               exit-vrf
               !
@@ -70,10 +71,6 @@ storage:
               !
               interface fabric
                 ip address 192.168.210.55/24
-              exit
-              !
-              interface sriov42
-               ip address 192.168.42.1/24
               exit
               !
               router bgp 64513

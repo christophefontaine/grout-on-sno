@@ -29,6 +29,13 @@ spec:
             ExecStop=/bin/bash -c 'echo "" > /sys/bus/pci/devices/0000:04:02.1/driver_override'
             ExecStop=/bin/bash -c 'echo "0000:04:02.1" > /sys/bus/pci/drivers/iavf/bind || true'
 
+            ExecStart=/bin/bash -c 'echo "vfio-pci" > /sys/bus/pci/devices/0000:04:0a.0/driver_override'
+            ExecStart=/bin/bash -c 'echo "0000:04:0a.0" > /sys/bus/pci/drivers/iavf/unbind || true'
+            ExecStart=/bin/bash -c 'echo "0000:04:0a.0" > /sys/bus/pci/drivers/vfio-pci/bind'
+            ExecStop=/bin/bash -c 'echo "0000:04:0a.0" > /sys/bus/pci/drivers/vfio-pci/unbind || true'
+            ExecStop=/bin/bash -c 'echo "" > /sys/bus/pci/devices/0000:04:0a.0/driver_override'
+            ExecStop=/bin/bash -c 'echo "0000:04:0a.0" > /sys/bus/pci/drivers/iavf/bind || true'
+
             [Install]
             WantedBy=multi-user.target
           enabled: true
