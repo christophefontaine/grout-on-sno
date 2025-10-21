@@ -52,25 +52,37 @@ storage:
           contents:
             inline: |
               !
-              ip route 192.168.101.55/32 192.168.101.55 ocp nexthop-vrf gr-loop1
-              ip route 192.168.42.0/24 gr-loop2 nexthop-vrf gr-loop2
+              frr version 10.4.1
+              frr defaults traditional
+              hostname grout-frr-pod
+              service integrated-vtysh-config
+              !
               ip route 0.0.0.0/0 192.168.210.1
+              ip route 192.168.42.0/24 gr-loop2 nexthop-vrf gr-loop2
+              ip route 192.168.101.55/32 192.168.101.55 ocp nexthop-vrf gr-loop1
               !
               vrf gr-loop1
                ip route 0.0.0.0/0 gr-loop0 nexthop-vrf default
+               ip route 192.200.0.0/24 fabric segments 5f00:0:55:2:: nexthop-vrf default
               exit-vrf
               !
               vrf gr-loop2
-               ip address 192.168.42.1/24
                ip route 0.0.0.0/0 gr-loop0 nexthop-vrf default
+               ip route 192.168.42.0/25 eno49.42
+               ip route 192.168.42.128/25 eno50.42
               exit-vrf
               !
-              interface ocp
-                ip address 192.168.101.1/24
+              interface fabric
+               ip address 192.168.210.55/24
+               ipv6 address fc00:1::55/64
               exit
               !
-              interface fabric
-                ip address 192.168.210.55/24
+              interface gr-loop2
+               ip address 192.168.42.1/32
+              exit
+              !
+              interface ocp
+               ip address 192.168.101.1/24
               exit
               !
               router bgp 64513
@@ -78,12 +90,59 @@ storage:
                neighbor 192.168.210.3 interface gr-loop0
                neighbor 192.168.210.3 update-source 192.168.210.55
                neighbor 192.168.210.3 ip-transparent
+               neighbor 192.168.210.3 capability extended-nexthop
+               neighbor 192.168.210.6 remote-as 64513
+               neighbor 192.168.210.6 interface gr-loop0
+               neighbor 192.168.210.6 update-source 192.168.210.55
+               !
+               segment-routing srv6
+                locator MAIN
+               exit
+               sid vpn per-vrf export auto
+               !
                address-family ipv4 unicast
-                network 192.168.101.55/32
                 network 192.168.42.0/24
+                network 192.168.101.55/32
+                export vpn
+                import vpn
+               exit-address-family
+               !
+               address-family ipv6 unicast
+                export vpn
+                import vpn
+               exit-address-family
+               !
+               address-family ipv6 vpn
+                neighbor 192.168.210.3 activate
+                neighbor 192.168.210.6 activate
                exit-address-family
               exit
               !
+              segment-routing
+               srv6
+                static-sids
+                 sid 5f00:0:55:1::/64 locator MAIN behavior uDT46 vrf default
+                 sid 5f00:0:55::/48 locator MAIN behavior uDT4 vrf ocp
+                exit
+                !
+               exit
+               !
+               srv6
+                encapsulation
+                 source-address fc00:1::55
+                locators
+                 locator MAIN
+                  prefix 5f00:0:55::/48
+                  format usid-f3216
+                 exit
+                 !
+                exit
+                !
+               exit
+               !
+              exit
+              !
+              end
         - path: /etc/frr/vtysh.conf
           mode: 0644
           overwrite: false
