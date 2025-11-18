@@ -75,6 +75,9 @@ storage:
               interface fabric
                ip address 192.168.210.55/24
                ipv6 address fc00:1::55/64
+               ip router isis CORE
+               ipv6 router isis CORE
+               isis network point-to-point
               exit
               !
               interface gr-loop2
@@ -116,6 +119,17 @@ storage:
                 neighbor 192.168.210.3 activate
                 neighbor 192.168.210.6 activate
                exit-address-family
+              exit
+              !
+              router isis CORE
+               net 49.0001.0000.0000.0055.00
+               is-type level-2-only
+               metric-style wide
+               !
+               segment-routing srv6
+                locator MAIN
+               exit
+               !
               exit
               !
               segment-routing
