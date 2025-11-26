@@ -35,8 +35,8 @@ systemd:
         [Service]
         Type=oneshot
         RemainAfterExit=yes
-        ExecStartPre=-/usr/bin/podman pull quay.io/grout/frr:edge
-        ExecStartPre=-/usr/bin/podman pull quay.io/grout/grout:edge
+        ExecStartPre=-/usr/bin/podman pull registry.appliance.openshift.com:5000/grout/frr:edge
+        ExecStartPre=-/usr/bin/podman pull registry.appliance.openshift.com:5000/grout/grout:edge
         ExecStartPre=-/usr/bin/podman pod stop grout-frr-pod
         ExecStartPre=-/usr/bin/podman pod rm grout-frr-pod --ignore
         ExecStart=/usr/bin/podman pod create --name grout-frr-pod --network=grout-net -p 9876:9876

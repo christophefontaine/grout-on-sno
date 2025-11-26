@@ -41,7 +41,6 @@ else
 fi
 
 ./generate-openshift-configs.sh
-#OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE=registry.foobar.space:5000/openshift-release-dev/ocp-release:4.19.13-x86_64 openshift-install --dir . --log-level debug agent create image
-openshift-install --dir . --log-level debug agent create image
+openshift-install --dir . --log-level debug agent create config-image
 scp agent.x86_64.iso droplet01.foobar.space:/var/www/html/droplet05.iso
 openshift-install --log-level debug  --dir .  agent wait-for install-complete

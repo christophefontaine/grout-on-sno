@@ -1,0 +1,49 @@
+apiVersion: v1beta1
+kind: ApplianceConfig
+metadata:
+  name: grout-on-sno-appliance
+
+# OpenShift version from your imageset-config.yaml
+ocpRelease:
+  version: 4.19.13
+  channel: stable
+  cpuArchitecture: x86_64
+
+# Minimum 150GB, adjust based on your needs
+# Add more space if you have many additional images
+# diskSizeGB: 200
+
+# Pull secret - will be populated from auth.json or pull-secret.txt
+# You need to provide your pull secret for Red Hat registries
+pullSecretFile: auth.json
+
+# SSH public key for accessing the cluster nodes
+sshPublicKeyFile: ~/.ssh/id_rsa.pub
+
+# Additional container images from your workloads
+additionalImages:
+  # Grout application images
+  - name: quay.io/grout/grout:edge
+  - name: quay.io/grout/frr:edge
+
+  # UBI base images
+  - name: registry.redhat.io/ubi8/ubi:latest
+  - name: registry.redhat.io/ubi9/ubi:latest
+  - name: registry.access.redhat.com/ubi9/ubi:latest
+
+  # Workload container images
+  - name: docker.io/library/nginx:alpine
+  - name: docker.io/alpine/socat:latest
+
+# Optional: Specify operators to include
+# Note: The appliance may have different syntax for operators
+# You may need to use oc-mirror separately for operator catalogs
+operators:
+  - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.19
+    packages:
+      - name: cluster-logging
+      - name: elasticsearch-operator
+      - name: local-storage-operator
+      - name: ocs-operator
+      - name: performance-addon-operator
+      - name: sriov-network-operator

@@ -7,7 +7,7 @@ hosts:
 - hostname: droplet05.foobar.space
   role: master
   rootDeviceHints:
-    deviceName: /dev/nvme0n1
+    deviceName: /dev/dm-0
   interfaces:
   - name: eno49
     macAddress: 48:df:37:68:d7:10
@@ -127,4 +127,3 @@ hosts:
       config:
         server:
         - 192.168.1.10
-        - 192.168.1.20
