@@ -11,9 +11,9 @@ spec:
   ipam: |
     {
       "type": "whereabouts",
-      "range": "192.168.42.0/24",
+      "range": "192.168.42.0/25",
       "range_start": "192.168.42.10",
-      "range_end": "192.168.42.100",
+      "range_end": "192.168.42.126",
       "gateway": "192.168.42.1",
       "routes": [{
         "dst": "0.0.0.0/0",
@@ -33,9 +33,9 @@ spec:
   ipam: |
     {
       "type": "whereabouts",
-      "range": "192.168.42.0/24",
-      "range_start": "192.168.42.101",
-      "range_end": "192.168.42.200",
+      "range": "192.168.42.128/25",
+      "range_start": "192.168.42.140",
+      "range_end": "192.168.42.250",
       "gateway": "192.168.42.1",
       "routes": [{
         "dst": "0.0.0.0/0",
