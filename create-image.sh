@@ -42,5 +42,5 @@ fi
 
 ./generate-openshift-configs.sh
 openshift-install --dir . --log-level debug agent create config-image
-scp agent.x86_64.iso droplet01.foobar.space:/var/www/html/droplet05.iso
+scp agentconfig.noarch.iso droplet01.foobar.space:/var/www/html/droplet05.iso
 openshift-install --log-level debug  --dir .  agent wait-for install-complete

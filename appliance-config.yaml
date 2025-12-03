@@ -15,10 +15,12 @@ ocpRelease:
 
 # Pull secret - will be populated from auth.json or pull-secret.txt
 # You need to provide your pull secret for Red Hat registries
-pullSecretFile: auth.json
+pullSecret: {}
 
 # SSH public key for accessing the cluster nodes
-sshPublicKeyFile: ~/.ssh/id_rsa.pub
+sshKey: |
+  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA7XvcW7XtarEoMeyym+/J9P1icspH5ws61Sh8yNKiST christophefontaine@mbp.foobar.space
+userCorePass: redhat
 
 # Additional container images from your workloads
 additionalImages:

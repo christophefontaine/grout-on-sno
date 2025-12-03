@@ -29,15 +29,15 @@ storage:
               service integrated-vtysh-config
               !
               ip route 0.0.0.0/0 192.168.210.1
-              ip route 192.168.42.0/24 gr-loop2 nexthop-vrf gr-loop2
-              ip route 192.168.101.55/32 192.168.101.55 ocp nexthop-vrf gr-loop1
+              ip route 192.168.42.0/24 gr-loop2 nexthop-vrf gr-vrf2
+              ip route 192.168.101.55/32 192.168.101.55 ocp nexthop-vrf gr-vrf1
               !
-              vrf gr-loop1
+              vrf gr-vrf1
                ip route 0.0.0.0/0 gr-loop0 nexthop-vrf default
                ip route 192.200.0.0/24 fabric segments 5f00:0:55:2:: nexthop-vrf default
               exit-vrf
               !
-              vrf gr-loop2
+              vrf gr-vrf2
                ip route 0.0.0.0/0 gr-loop0 nexthop-vrf default
                ip route 192.168.42.0/25 eno49.42
                ip route 192.168.42.128/25 eno50.42

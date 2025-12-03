@@ -95,6 +95,15 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
 fi
 
+# Read pullSecret from auth.json
+if [ -f ~/.config/containers/auth.json ]; then
+    PULL_SECRET=$(cat ~/.config/containers/auth.json | tr -d '\n')
+    yq -y -i --width 10000 --arg secret "$PULL_SECRET" '.pullSecret = $secret' appliance-config.yaml
+    echo "  ✓ pullSecret updated from ~/.config/containers/auth.json"
+else
+    echo "  ⚠ WARNING: ~/.config/containers/auth.json not found, pullSecret not updated"
+fi
+
 echo ""
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}Step 2: Building Appliance Disk Image${NC}"

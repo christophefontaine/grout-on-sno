@@ -6,23 +6,6 @@ metadata:
     machineconfiguration.openshift.io/role: master
 systemd:
   units:
-    - name: grout-network-setup.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Setup GROUT Network Namespace and TAP Interface
-        After=network-online.target
-        Before=grout-container.service grout-telemetry.service
-        Wants=network-online.target
-
-        [Service]
-        Type=oneshot
-        RemainAfterExit=yes
-        ExecStart=/usr/bin/podman network create grout-net --driver=bridge --subnet=172.20.0.0/16 --ignore
-        ExecStop=/usr/bin/podman network rm grout-net
-
-        [Install]
-        WantedBy=multi-user.target
     - name: grout-frr-pod-setup.service
       enabled: true
       contents: |
@@ -39,7 +22,7 @@ systemd:
         ExecStartPre=-/usr/bin/podman pull registry.appliance.openshift.com:5000/grout/grout:edge
         ExecStartPre=-/usr/bin/podman pod stop grout-frr-pod
         ExecStartPre=-/usr/bin/podman pod rm grout-frr-pod --ignore
-        ExecStart=/usr/bin/podman pod create --name grout-frr-pod --network=grout-net -p 9876:9876
+        ExecStart=/usr/bin/podman pod create --name grout-frr-pod --network none
         ExecStop=/usr/bin/podman pod stop grout-frr-pod
         ExecStopPost=/usr/bin/podman pod rm grout-frr-pod --ignore
 
