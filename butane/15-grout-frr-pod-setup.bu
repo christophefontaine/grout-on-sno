@@ -11,9 +11,7 @@ systemd:
       contents: |
         [Unit]
         Description=Setup GROUT-FRR Pod
-        After=grout-network-setup.service
         Before=grout-container.service frr-container.service
-        Requires=grout-network-setup.service
 
         [Service]
         Type=oneshot

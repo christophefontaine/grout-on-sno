@@ -50,7 +50,7 @@ systemd:
       contents: |
         [Unit]
         Description=GROUT DPDK Telemetry Exporter
-        After=grout-container.service network-online.target grout-network-setup.service
+        After=grout-container.service network-online.target
         Requires=grout-container.service
         Wants=network-online.target
 

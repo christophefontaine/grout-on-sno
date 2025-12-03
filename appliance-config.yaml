@@ -2,10 +2,8 @@ apiVersion: v1beta1
 kind: ApplianceConfig
 metadata:
   name: grout-on-sno-appliance
-
-# OpenShift version from your imageset-config.yaml
 ocpRelease:
-  version: 4.19.13
+  version: 4.19
   channel: stable
   cpuArchitecture: x86_64
 
@@ -21,31 +19,37 @@ pullSecret: {}
 sshKey: |
   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA7XvcW7XtarEoMeyym+/J9P1icspH5ws61Sh8yNKiST christophefontaine@mbp.foobar.space
 userCorePass: redhat
-
-# Additional container images from your workloads
+createPinnedImageSets: create-pinned-image-sets
 additionalImages:
-  # Grout application images
-  - name: quay.io/grout/grout:edge
-  - name: quay.io/grout/frr:edge
-
-  # UBI base images
-  - name: registry.redhat.io/ubi8/ubi:latest
-  - name: registry.redhat.io/ubi9/ubi:latest
-  - name: registry.access.redhat.com/ubi9/ubi:latest
-
-  # Workload container images
+  - name: quay.io/grout/grout
+  - name: quay.io/grout/frr
+  - name: registry.redhat.io/ubi8/ubi
+  - name: registry.redhat.io/ubi9/ubi
+  - name: registry.access.redhat.com/ubi9/ubi
   - name: docker.io/library/nginx:alpine
-  - name: docker.io/alpine/socat:latest
-
-# Optional: Specify operators to include
-# Note: The appliance may have different syntax for operators
-# You may need to use oc-mirror separately for operator catalogs
+  - name: docker.io/alpine/socat
+  - name: registry.redhat.io/rhel9/support-tools
 operators:
   - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.19
     packages:
       - name: cluster-logging
+        channels:
+          - name: stable-6.4
+      - name: loki-operator
+        channels:
+          - name: stable-6.4
       - name: elasticsearch-operator
+        channels:
+          - name: stable
       - name: local-storage-operator
+        channels:
+          - name: stable
       - name: ocs-operator
+        channels:
+          - name: stable
       - name: performance-addon-operator
+        channels:
+          - name: stable
       - name: sriov-network-operator
+        channels:
+          - name: stable
