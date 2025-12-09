@@ -26,7 +26,7 @@ systemd:
           -e ZEBRA_DEBUG_DPLANE_GROUT=1 \
           -v /run:/run \
           -v /etc/frr:/etc/frr \
-          registry.appliance.openshift.com:5000/grout/frr:edge \
+          quay.io/grout/frr:edge \
           /bin/sh -c 'chown frr /var/run/frr/ && source /usr/lib/frr/frrcommon.sh && /usr/lib/frr/watchfrr $(daemon_list)'
         ExecStartPost=ip link set eno49 vf 0 vlan 3967
         ExecStartPost=sleep 5

@@ -36,7 +36,7 @@ systemd:
           -v /sys/bus/pci:/sys/bus/pci \
           -v /run:/run \
           -v /etc/grout:/etc/grout:ro \
-          registry.appliance.openshift.com:5000/grout/grout:edge /usr/bin/grout -vv -m 0666
+          quay.io/grout/grout:edge /usr/bin/grout -vv -m 0666
         ExecStartPost=/usr/bin/podman exec grout-boot /usr/bin/grcli -xef /etc/grout/interfaces
         ExecStop=/usr/bin/podman stop grout-boot
         Restart=always
@@ -65,7 +65,7 @@ systemd:
           --cpuset-cpus 0,1,2 \
           --privileged --replace \
           -v /run:/run \
-          registry.appliance.openshift.com:5000/grout/grout:edge \
+          quay.io/grout/grout:edge \
           /usr/bin/grout-telemetry-exporter
         ExecStop=/usr/bin/podman stop grout-telemetry
         ExecStopPost=/usr/bin/podman rm -f grout-telemetry
