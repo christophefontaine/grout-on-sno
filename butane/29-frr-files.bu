@@ -16,14 +16,14 @@ storage:
               vtysh_enable=yes
               zebra_options="  -A 127.0.0.1 -s 90000000 --log file:/var/log/frr/frr.log --log stdout -M dplane_grout"
               bgpd_options="   -A 127.0.0.1"
-              isisd_options="  -A 127.0.0.1"
+              isisd_options="  -A 127.0.0.1 --log stdout"
         - path: /etc/frr/frr.conf
           mode: 0644
           overwrite: false
           contents:
             inline: |
               !
-              frr version 10.4.1
+              frr version 10.5.0
               frr defaults traditional
               hostname grout-frr-pod
               service integrated-vtysh-config
@@ -48,9 +48,11 @@ storage:
                ipv6 address fc00:1::55/64
                ip router isis CORE
                ipv6 router isis CORE
-               isis network point-to-point
               exit
               !
+              interface eno49v1
+               ipv6 router isis CORE
+              exit
               interface gr-loop2
                ip address 192.168.42.1/32
               exit
@@ -89,7 +91,6 @@ storage:
               !
               router isis CORE
                net 49.0001.0000.0000.0055.00
-               is-type level-2-only
                metric-style wide
                !
                segment-routing srv6

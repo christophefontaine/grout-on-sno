@@ -7,8 +7,8 @@ hosts:
 - hostname: droplet05.foobar.space
   role: master
   rootDeviceHints:
-    #    deviceName: /dev/nvme0n1
-    deviceName: /dev/disk/by-path/pci-0000:08:00.0-nvme-1
+    deviceName: /dev/dm-0
+    #deviceName: /dev/disk/by-path/pci-0000:08:00.0-nvme-1
   interfaces:
   - name: eno49
     macAddress: 48:df:37:68:d7:10

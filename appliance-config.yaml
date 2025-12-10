@@ -19,37 +19,18 @@ pullSecret: {}
 sshKey: |
   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA7XvcW7XtarEoMeyym+/J9P1icspH5ws61Sh8yNKiST christophefontaine@mbp.foobar.space
 userCorePass: redhat
-createPinnedImageSets: create-pinned-image-sets
+stopLocalRegistry: false
 additionalImages:
-  - name: quay.io/grout/grout
-  - name: quay.io/grout/frr
-  - name: registry.redhat.io/ubi8/ubi
-  - name: registry.redhat.io/ubi9/ubi
-  - name: registry.access.redhat.com/ubi9/ubi
-  - name: docker.io/library/nginx:alpine
-  - name: docker.io/alpine/socat
-  - name: registry.redhat.io/rhel9/support-tools
+  - name: quay.io/grout/grout:latest
+  - name: quay.io/grout/frr:latest
+  - name: registry.redhat.io/rhel9/support-tools:latest
 operators:
   - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.19
     packages:
       - name: cluster-logging
-        channels:
-          - name: stable-6.4
       - name: loki-operator
-        channels:
-          - name: stable-6.4
       - name: elasticsearch-operator
-        channels:
-          - name: stable
       - name: local-storage-operator
-        channels:
-          - name: stable
       - name: ocs-operator
-        channels:
-          - name: stable
       - name: performance-addon-operator
-        channels:
-          - name: stable
       - name: sriov-network-operator
-        channels:
-          - name: stable

@@ -118,16 +118,9 @@ echo ""
 
 # Build the appliance
 # Note: Requires root/sudo for privileged operations
-if [ "$EUID" -ne 0 ]; then
-    echo -e "${YELLOW}Building appliance requires root privileges...${NC}"
-    sudo podman run --rm -it --pull newer --privileged --net=host \
-      -v "$APPLIANCE_ASSETS:/assets:Z" \
-      "$APPLIANCE_IMAGE" build
-else
-    podman run --rm -it --pull newer --privileged --net=host \
-      -v "$APPLIANCE_ASSETS:/assets:Z" \
-      "$APPLIANCE_IMAGE" build
-fi
+podman run --rm -it --pull newer --privileged --net=host \
+  -v "$APPLIANCE_ASSETS:/assets:Z" \
+  "$APPLIANCE_IMAGE" build
 
 BUILD_STATUS=$?
 
@@ -148,6 +141,9 @@ if [ $BUILD_STATUS -eq 0 ]; then
     echo -e "${YELLOW}To verify the embedded images:${NC}"
     echo "  skopeo inspect --config oci:<path-to-image-dir>:<image-name>"
     echo ""
+podman run --rm -it --pull newer --privileged --net=host \
+  -v "$APPLIANCE_ASSETS:/assets:Z" \
+  "$APPLIANCE_IMAGE" build iso
 else
     echo -e "${RED}========================================${NC}"
     echo -e "${RED}Build Failed!${NC}"

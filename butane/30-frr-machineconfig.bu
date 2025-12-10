@@ -30,7 +30,6 @@ systemd:
           /bin/sh -c 'chown frr /var/run/frr/ && source /usr/lib/frr/frrcommon.sh && /usr/lib/frr/watchfrr $(daemon_list)'
         ExecStartPost=ip link set eno49 vf 0 vlan 3967
         ExecStartPost=sleep 5
-        ExecStartPost=-/usr/local/bin/configure-frr-grout-ns.sh
         ExecStop=/usr/bin/podman stop frr-boot
         Restart=always
         RestartSec=10
