@@ -4,6 +4,12 @@ metadata:
   name: 19-grout-config
   labels:
     machineconfiguration.openshift.io/role: master
+systemd:
+      units:
+        - name: grout-bind@eno49v1.service
+          enabled: true
+        - name: grout-bind@eno50v0.service
+          enabled: true
 storage:
   files:
         - path: /etc/grout/interfaces

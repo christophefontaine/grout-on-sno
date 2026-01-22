@@ -11,10 +11,10 @@ systemd:
       contents: |
         [Unit]
         Description=GROUT Container Service
-        After=network-online.target dev-hugepages.mount grout-frr-pod-setup.service
+        After=network-online.target dev-hugepages.mount hbn-grout-frr-setup.service
         Before=kubelet.service crio.service ovs-configuration.service
         Wants=network-online.target dev-hugepages.mount
-        Requires=dev-hugepages.mount grout-frr-pod-setup.service
+        Requires=dev-hugepages.mount hbn-grout-frr-setup.service
         ConditionPathExists=/dev/hugepages
 
         [Service]
@@ -22,9 +22,10 @@ systemd:
         User=root
         NotifyAccess=all
         ExecStartPre=/usr/bin/udevadm settle
-        ExecStartPre=-/usr/bin/podman rm grout-boot --ignore
-        ExecStart=/usr/bin/podman run --name grout-boot \
-          --pod grout-frr-pod \
+        ExecStartPre=-/usr/bin/podman rm grout-hbn --ignore
+        ExecStart=/usr/bin/podman run --name grout-hbn \
+          --pod hbn-grout-frr \
+          --network=ns:/run/netns/hbn-grout \
           --privileged \
           --cap-add=SYS_ADMIN \
           --cap-add=NET_ADMIN \
@@ -37,38 +38,8 @@ systemd:
           -v /run:/run \
           -v /etc/grout:/etc/grout:ro \
           quay.io/grout/grout:edge /usr/bin/grout -vv -m 0666
-        ExecStartPost=/usr/bin/podman exec grout-boot /usr/bin/grcli -xef /etc/grout/interfaces
-        ExecStop=/usr/bin/podman stop grout-boot
-        Restart=always
-        RestartSec=10
-
-        [Install]
-        WantedBy=multi-user.target
-        
-    - name: grout-telemetry.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=GROUT DPDK Telemetry Exporter
-        After=grout-container.service network-online.target
-        Requires=grout-container.service
-        Wants=network-online.target
-
-        [Service]
-        Type=simple
-        User=root
-        ExecStartPre=/usr/bin/podman rm -f grout-telemetry
-        ExecStart=/usr/bin/podman run --rm --name grout-telemetry \
-          --pod grout-frr-pod \
-          --network bridge \
-          -p 9876:9876 \
-          --cpuset-cpus 0,1,2 \
-          --privileged --replace \
-          -v /run:/run \
-          quay.io/grout/grout:edge \
-          /usr/bin/grout-telemetry-exporter
-        ExecStop=/usr/bin/podman stop grout-telemetry
-        ExecStopPost=/usr/bin/podman rm -f grout-telemetry
+        ExecStartPost=/usr/bin/podman exec grout-hbn /usr/bin/grcli -xef /etc/grout/interfaces
+        ExecStop=/usr/bin/podman stop grout-hbn
         Restart=always
         RestartSec=10
 

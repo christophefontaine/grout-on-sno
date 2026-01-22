@@ -1,12 +1,12 @@
 variant: openshift
 version: 4.19.0
 metadata:
-  name: 15-grout-frr-pod-setup
+  name: 15-hbn-grout-frr-setup
   labels:
     machineconfiguration.openshift.io/role: master
 systemd:
   units:
-    - name: grout-frr-pod-setup.service
+    - name: hbn-grout-frr-setup.service
       enabled: true
       contents: |
         [Unit]
@@ -16,11 +16,11 @@ systemd:
         [Service]
         Type=oneshot
         RemainAfterExit=yes
-        ExecStartPre=-/usr/bin/podman pod stop grout-frr-pod
-        ExecStartPre=-/usr/bin/podman pod rm grout-frr-pod --ignore
-        ExecStart=/usr/bin/podman pod create --name grout-frr-pod --network none
-        ExecStop=/usr/bin/podman pod stop grout-frr-pod
-        ExecStopPost=/usr/bin/podman pod rm grout-frr-pod --ignore
+        ExecStartPre=-/usr/bin/podman pod stop hbn-grout-frr
+        ExecStartPre=-/usr/bin/podman pod rm hbn-grout-frr --ignore
+        ExecStart=/usr/bin/podman pod create --name hbn-grout-frr --network none
+        ExecStop=/usr/bin/podman pod stop hbn-grout-frr
+        ExecStopPost=/usr/bin/podman pod rm hbn-grout-frr --ignore
 
         [Install]
         WantedBy=multi-user.target
